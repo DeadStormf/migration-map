@@ -1,0 +1,285 @@
+/* ── Reset & base ─────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  background: #0f0c08;
+  color: #c8b8a2;
+  font-family: 'Crimson Text', Georgia, serif;
+  overflow-x: hidden;
+}
+
+/* ── App shell ────────────────────────────────────────── */
+.app {
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Header ───────────────────────────────────────────── */
+.header {
+  text-align: center;
+  padding: 1.1rem 1rem 0.75rem;
+  background: linear-gradient(180deg, #1a1410 0%, transparent 100%);
+  position: relative;
+  z-index: 1;
+}
+
+.header h1 {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(1.4rem, 4vw, 2.6rem);
+  font-weight: 700;
+  color: #d4a017;
+  letter-spacing: 0.1em;
+  text-shadow: 0 0 40px rgba(212, 160, 23, 0.4);
+  margin-bottom: 0.5rem;
+}
+
+.header p {
+  font-size: 1.05rem;
+  color: #9e8e78;
+  font-style: italic;
+}
+
+/* ── Map ──────────────────────────────────────────────── */
+.map-area {
+  flex: 1;
+  min-height: 0;        /* lets flexbox shrink below intrinsic height */
+  background: #163d58;  /* matches flat ocean fill */
+  position: relative;
+  overflow: hidden;
+}
+
+#map-svg {
+  display: block;
+  width: 100%;
+  height: 100%;         /* fill the flex container exactly */
+}
+
+/* Land hover — brightens whatever biome color is set */
+.land path {
+  transition: filter 0.15s;
+}
+.land path:hover {
+  filter: brightness(1.18) saturate(1.1);
+}
+
+/* ── Marker pulse animation ───────────────────────────── */
+@keyframes markerPulse {
+  0%   { transform: scale(1); opacity: 0.7; }
+  100% { transform: scale(2.5); opacity: 0; }
+}
+
+.pulse-ring {
+  animation: markerPulse 2.3s ease-out infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+/* ── Legend ───────────────────────────────────────────── */
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.4rem 1.1rem;
+  padding: 0.875rem 1rem;
+  background: rgba(0, 0, 0, 0.38);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.3rem 0.65rem;
+  border-radius: 4px;
+  font-family: 'Crimson Text', serif;
+  font-size: 0.92rem;
+  color: #9e8e78;
+  transition: color 0.2s, background 0.2s;
+}
+
+.legend-item:hover,
+.legend-item.active {
+  color: #f0e4cc;
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.legend-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ── Backdrop overlay ─────────────────────────────────── */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  z-index: 99;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease;
+}
+
+.overlay.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* ── Story panel ──────────────────────────────────────── */
+.story-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: min(460px, 100vw);
+  height: 100vh;
+  background: #f9f3e8;
+  color: #2c1810;
+  z-index: 100;
+  overflow-y: auto;
+  transform: translateX(100%);
+  transition: transform 0.42s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  box-shadow: -10px 0 40px rgba(0, 0, 0, 0.65);
+  display: flex;
+  flex-direction: column;
+}
+
+.story-panel.open {
+  transform: translateX(0);
+}
+
+/* Close button */
+.panel-close {
+  position: absolute;
+  top: 0.85rem;
+  right: 0.85rem;
+  width: 2rem;
+  height: 2rem;
+  border: none;
+  background: rgba(0, 0, 0, 0.45);
+  color: white;
+  border-radius: 50%;
+  font-size: 0.85rem;
+  cursor: pointer;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+  line-height: 1;
+}
+
+.panel-close:hover {
+  background: rgba(0, 0, 0, 0.72);
+}
+
+/* Hero image area */
+.panel-hero {
+  position: relative;
+  height: 230px;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.panel-hero-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.72;
+}
+
+.panel-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.85) 0%,
+    rgba(0, 0, 0, 0.3) 55%,
+    transparent 100%
+  );
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 1.25rem 1.4rem;
+}
+
+.panel-num {
+  font-family: 'Cinzel', serif;
+  font-size: 0.72rem;
+  color: var(--story-color, #d4a017);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin-bottom: 0.3rem;
+}
+
+.panel-title {
+  font-family: 'Cinzel', serif;
+  font-size: 1.22rem;
+  font-weight: 700;
+  color: white;
+  line-height: 1.25;
+}
+
+.panel-period {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.75);
+  margin-top: 0.3rem;
+  font-style: italic;
+}
+
+/* Panel body */
+.panel-body {
+  padding: 1.4rem;
+  flex: 1;
+}
+
+.character-card {
+  border-left: 4px solid var(--story-color, #d4a017);
+  padding: 0.7rem 1rem;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 0 4px 4px 0;
+  margin-bottom: 1.4rem;
+}
+
+.character-name {
+  font-family: 'Cinzel', serif;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--story-color, #d4a017);
+  margin-bottom: 0.25rem;
+}
+
+.character-tagline {
+  font-size: 0.95rem;
+  font-style: italic;
+  color: #5c4030;
+  line-height: 1.45;
+}
+
+/* Story text */
+.story-text p {
+  font-size: 1.05rem;
+  line-height: 1.82;
+  color: #2c1810;
+  margin-bottom: 1.1rem;
+  text-align: justify;
+}
+
+.story-text p:last-child {
+  margin-bottom: 0;
+}
+
+/* ── Responsive ───────────────────────────────────────── */
+@media (max-width: 600px) {
+  .header h1 { font-size: 1.4rem; }
+  .legend-label { display: none; }
+  .legend-dot { width: 12px; height: 12px; }
+  .legend-item { padding: 0.35rem 0.55rem; }
+}
