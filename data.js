@@ -22,7 +22,7 @@ const STORIES = [
     title: 'South Into Southeast Asia',
     period: '~50,000 years ago',
     character: 'Ranu',
-    tagline: 'A hunter who learned to read a world of leaves, pawprints, and fever',
+    tagline: 'A hunter who learned to travel in a new world of leaves and foreign creatures',
     from: [80, 12],
     to: [107, 14],
     markerCoords: [98, 13],
